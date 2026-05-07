@@ -1,94 +1,84 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/navigation";
-import { API_BASE_URL } from "../lib/api";
-
-const getErrorMessage = (error: unknown) => {
-  if (axios.isAxiosError<{ message?: string }>(error)) {
-    return error.response?.data?.message || "Login failed";
-  }
-
-  return "Login failed";
-};
 
 export default function LoginPage() {
   const router = useRouter();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (
-    e: React.FormEvent
-  ) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const res = await axios.post(
-        `${API_BASE_URL}/api/auth/login`,
-        formData
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
       );
 
-      // Save token
-      localStorage.setItem(
-        "token",
-        res.data.token
-      );
+      const data = await res.json();
 
-      alert("Login Successful");
+      if (!res.ok) {
+        alert(data.message || "Login failed");
+        return;
+      }
 
-      // Redirect
+      localStorage.setItem("token", data.token);
       router.push("/dashboard");
-    } catch (error: unknown) {
-      alert(getErrorMessage(error));
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong");
     }
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-zinc-900 p-8 rounded-xl w-[400px] space-y-4"
-      >
-        <h1 className="text-3xl font-bold text-center">
-          Login
-        </h1>
+    <main className="min-h-screen flex items-center justify-center bg-gray-100 px-6">
+      <div className="bg-white p-10 rounded-2xl shadow-lg w-full max-w-md">
+        <h1 className="text-3xl font-bold mb-6 text-center">Login</h1>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-          className="w-full p-3 rounded bg-zinc-800"
-        />
+        <form onSubmit={handleLogin} className="space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full border p-3 rounded-lg"
+            required
+          />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-          className="w-full p-3 rounded bg-zinc-800"
-        />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full border p-3 rounded-lg"
+            required
+          />
 
-        <button
-          type="submit"
-          className="w-full bg-white text-black p-3 rounded font-semibold"
-        >
-          Login
-        </button>
-      </form>
-    </div>
+          <button
+            type="submit"
+            className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition"
+          >
+            Login
+          </button>
+        </form>
+
+        <p className="text-center mt-6 text-gray-600">
+          Don’t have an account?{" "}
+          <Link href="/register" className="text-black font-semibold">
+            Register
+          </Link>
+        </p>
+      </div>
+    </main>
   );
 }

@@ -1,173 +1,230 @@
-"use client";
-
 import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 
-export default function RegisterPage() {
-  const router = useRouter();
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      setLoading(true);
-
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            email,
-            password,
-          }),
-        }
-      );
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message || "Registration failed");
-        setLoading(false);
-        return;
-      }
-
-      localStorage.setItem("token", data.token);
-
-      router.push("/dashboard");
-    } catch (error) {
-      console.error(error);
-      alert("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+export default function HomePage() {
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 px-6 py-10">
-      <div className="w-full max-w-5xl grid md:grid-cols-2 bg-white rounded-3xl overflow-hidden shadow-2xl">
-        {/* LEFT SECTION */}
-        <div className="hidden md:flex flex-col justify-center bg-black text-white p-12 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,white,transparent_40%)]"></div>
-
-          <h1 className="text-5xl font-bold leading-tight mb-6 z-10">
-            Welcome to <br />
+    <main className="min-h-screen bg-black text-white overflow-hidden">
+      
+      {/* NAVBAR */}
+      <nav className="w-full flex items-center justify-between px-8 md:px-16 py-6 border-b border-white/10 backdrop-blur-md">
+        <div>
+          <h1 className="text-2xl font-bold tracking-wide">
             SubSense AI
           </h1>
+        </div>
 
-          <p className="text-gray-300 text-lg leading-relaxed z-10">
-            Manage subscriptions smarter with AI-powered insights,
-            spending analytics, OCR invoice scanning, and automated
-            subscription tracking.
-          </p>
+        <div className="hidden md:flex items-center gap-8 text-gray-300">
+          <a href="#features" className="hover:text-white transition">
+            Features
+          </a>
 
-          <div className="mt-10 space-y-4 z-10">
-            <div className="flex items-center gap-3">
-              <div className="w-3 h-3 rounded-full bg-green-400"></div>
-              <p>AI Expense Insights</p>
+          <a href="#about" className="hover:text-white transition">
+            About
+          </a>
+
+          <a href="#contact" className="hover:text-white transition">
+            Contact
+          </a>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <Link href="/login">
+            <button className="px-5 py-2 rounded-lg border border-white/20 hover:bg-white hover:text-black transition">
+              Login
+            </button>
+          </Link>
+
+          <Link href="/register">
+            <button className="px-5 py-2 rounded-lg bg-white text-black font-semibold hover:bg-gray-200 transition">
+              Register
+            </button>
+          </Link>
+        </div>
+      </nav>
+
+      {/* HERO SECTION */}
+      <section className="relative px-8 md:px-16 py-24 md:py-32">
+        
+        <div className="absolute top-0 left-0 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"></div>
+
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center relative z-10">
+          
+          {/* LEFT */}
+          <div>
+            <p className="text-sm uppercase tracking-[0.3em] text-gray-400 mb-4">
+              AI Powered Subscription Management
+            </p>
+
+            <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6">
+              Manage Your <br />
+              Subscriptions <br />
+              Smarter with AI
+            </h1>
+
+            <p className="text-gray-400 text-lg leading-relaxed mb-10 max-w-xl">
+              Track recurring payments, analyze spending habits,
+              scan invoices using OCR, and get intelligent financial
+              insights — all in one centralized platform.
+            </p>
+
+            <div className="flex flex-wrap gap-4">
+              <Link href="/register">
+                <button className="px-8 py-4 rounded-xl bg-white text-black font-semibold hover:bg-gray-200 transition shadow-lg">
+                  Get Started
+                </button>
+              </Link>
+
+              <Link href="/login">
+                <button className="px-8 py-4 rounded-xl border border-white/20 hover:bg-white hover:text-black transition">
+                  Login
+                </button>
+              </Link>
             </div>
+          </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-3 h-3 rounded-full bg-blue-400"></div>
-              <p>Smart Subscription Tracking</p>
-            </div>
+          {/* RIGHT CARD */}
+          <div className="relative">
+            <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
+              
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <p className="text-gray-400 text-sm">
+                    Monthly Expenses
+                  </p>
 
-            <div className="flex items-center gap-3">
-              <div className="w-3 h-3 rounded-full bg-purple-400"></div>
-              <p>OCR Invoice Scanner</p>
+                  <h2 className="text-4xl font-bold mt-2">
+                    ₹4,850
+                  </h2>
+                </div>
+
+                <div className="bg-green-500/20 text-green-400 px-4 py-2 rounded-full text-sm">
+                  +12%
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {[
+                  "Netflix Premium",
+                  "Spotify Premium",
+                  "Adobe Creative Cloud",
+                  "YouTube Premium",
+                ].map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between bg-white/5 rounded-xl px-4 py-4 border border-white/5"
+                  >
+                    <div>
+                      <h3 className="font-medium">{item}</h3>
+                      <p className="text-sm text-gray-400">
+                        Active Subscription
+                      </p>
+                    </div>
+
+                    <p className="font-semibold">
+                      ₹499
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* RIGHT SECTION */}
-        <div className="flex items-center justify-center p-8 md:p-12 bg-white">
-          <div className="w-full max-w-md">
-            <div className="mb-8 text-center">
-              <h2 className="text-4xl font-bold text-gray-900 mb-2">
-                Create Account
-              </h2>
+      {/* FEATURES */}
+      <section
+        id="features"
+        className="px-8 md:px-16 py-20 bg-white text-black"
+      >
+        <div className="max-w-6xl mx-auto">
+          
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-bold mb-6">
+              Powerful Features
+            </h2>
 
-              <p className="text-gray-500">
-                Start managing your subscriptions intelligently.
-              </p>
-            </div>
-
-            <form onSubmit={handleRegister} className="space-y-5">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name
-                </label>
-
-                <input
-                  type="text"
-                  placeholder="Enter your full name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black transition"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
-                </label>
-
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black transition"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Password
-                </label>
-
-                <input
-                  type="password"
-                  placeholder="Create a password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black transition"
-                  required
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-black hover:bg-gray-900 text-white py-3 rounded-xl font-semibold transition duration-300 shadow-lg disabled:opacity-50"
-              >
-                {loading ? "Creating Account..." : "Register"}
-              </button>
-            </form>
-
-            <p className="text-center mt-8 text-gray-600">
-              Already have an account?{" "}
-              <Link
-                href="/login"
-                className="font-semibold text-black hover:underline"
-              >
-                Login
-              </Link>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              SubSense AI combines intelligent automation,
+              analytics, and subscription tracking into one
+              seamless platform.
             </p>
           </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            
+            {[
+              {
+                title: "AI Analytics",
+                desc: "Get intelligent financial insights and spending analysis powered by AI.",
+              },
+              {
+                title: "OCR Invoice Scanner",
+                desc: "Automatically extract subscription details from uploaded invoices.",
+              },
+              {
+                title: "Cloud Dashboard",
+                desc: "Access your subscriptions anytime with secure cloud deployment.",
+              },
+            ].map((feature, index) => (
+              <div
+                key={index}
+                className="p-8 rounded-3xl border border-gray-200 hover:shadow-2xl transition bg-gray-50"
+              >
+                <div className="w-14 h-14 rounded-2xl bg-black text-white flex items-center justify-center mb-6 text-xl">
+                  {index + 1}
+                </div>
+
+                <h3 className="text-2xl font-semibold mb-4">
+                  {feature.title}
+                </h3>
+
+                <p className="text-gray-600 leading-relaxed">
+                  {feature.desc}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* ABOUT */}
+      <section
+        id="about"
+        className="px-8 md:px-16 py-24 bg-black text-white"
+      >
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-5xl font-bold mb-8">
+            Why SubSense AI?
+          </h2>
+
+          <p className="text-gray-400 text-lg leading-relaxed">
+            Managing multiple subscriptions manually can become
+            confusing and expensive. SubSense AI helps users
+            monitor recurring expenses, track renewals, and gain
+            financial awareness through AI-powered analytics and
+            automation.
+          </p>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer
+        id="contact"
+        className="border-t border-white/10 px-8 md:px-16 py-10 text-center text-gray-500"
+      >
+        <h3 className="text-2xl font-bold text-white mb-3">
+          SubSense AI
+        </h3>
+
+        <p>
+          AI Powered Subscription Management System
+        </p>
+
+        <p className="mt-4 text-sm">
+          Developed using Next.js, Node.js, MongoDB Atlas,
+          Render, and Vercel.
+        </p>
+      </footer>
     </main>
   );
 }

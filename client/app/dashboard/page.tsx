@@ -125,7 +125,7 @@ export default function DashboardPage() {
         <div className="p-6 md:p-10 space-y-10">
 
           {/* HERO SECTION */}
-          <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 p-10 shadow-2xl">
+          <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-zinc-900 via-black to-zinc-800 border border-white/10 p-10 shadow-2xl">
 
             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,white,transparent_40%)]"></div>
 
@@ -181,7 +181,7 @@ export default function DashboardPage() {
           </section>
 
           {/* AI INSIGHTS */}
-          <section className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-3xl p-10 shadow-2xl">
+          <section className="bg-gradient-to-br from-zinc-900 via-zinc-950 to-black border border-white/10 rounded-3xl p-10 shadow-2xl">
 
             <h2 className="text-4xl font-bold mb-8">
               AI Insights 🤖

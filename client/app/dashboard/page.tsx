@@ -261,52 +261,131 @@ export default function DashboardPage() {
               Add Subscription
             </h2>
 
-            <div className="grid md:grid-cols-4 gap-5">
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
 
-              <input
-                type="text"
-                placeholder="Platform"
-                value={platform}
-                onChange={(e) =>
-                  setPlatform(e.target.value)
+                try {
+                  const token =
+                    localStorage.getItem("token");
+
+                  const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/subscriptions`,
+                    {
+                      method: "POST",
+                      headers: {
+                        "Content-Type":
+                          "application/json",
+                        Authorization: `Bearer ${token}`,
+                      },
+                      body: JSON.stringify({
+                        platform,
+                        amount,
+                        billingCycle,
+                        renewalDate,
+                      }),
+                    }
+                  );
+
+                  const data = await response.json();
+
+                  if (!response.ok) {
+                    alert(
+                      data.message ||
+                        "Failed to add subscription"
+                    );
+                    return;
+                  }
+
+                  // Add new subscription to UI
+                  setSubscriptions([
+                    ...subscriptions,
+                    data,
+                  ]);
+
+                  // Clear form
+                  setPlatform("");
+                  setAmount("");
+                  setBillingCycle("");
+                  setRenewalDate("");
+
+                  alert(
+                    "Subscription added successfully!"
+                  );
+
+                } catch (error) {
+                  console.error(error);
+                  alert("Something went wrong");
                 }
-                className="bg-black border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-purple-500"
-              />
+              }}
+            >
 
-              <input
-                type="number"
-                placeholder="Amount"
-                value={amount}
-                onChange={(e) =>
-                  setAmount(e.target.value)
-                }
-                className="bg-black border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-purple-500"
-              />
+              <div className="grid md:grid-cols-4 gap-5">
 
-              <input
-                type="text"
-                placeholder="Monthly / Yearly"
-                value={billingCycle}
-                onChange={(e) =>
-                  setBillingCycle(e.target.value)
-                }
-                className="bg-black border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-purple-500"
-              />
+                <input
+                  type="text"
+                  placeholder="Platform"
+                  value={platform}
+                  onChange={(e) =>
+                    setPlatform(e.target.value)
+                  }
+                  className="bg-black border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-purple-500"
+                  required
+                />
 
-              <input
-                type="date"
-                value={renewalDate}
-                onChange={(e) =>
-                  setRenewalDate(e.target.value)
-                }
-                className="bg-black border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-purple-500"
-              />
+                <input
+                  type="number"
+                  placeholder="Amount"
+                  value={amount}
+                  onChange={(e) =>
+                    setAmount(e.target.value)
+                  }
+                  className="bg-black border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-purple-500"
+                  required
+                />
 
-            </div>
+                <select
+                  value={billingCycle}
+                  onChange={(e) =>
+                    setBillingCycle(e.target.value)
+                  }
+                  className="bg-black border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-purple-500"
+                  required
+                >
+                  <option value="">
+                    Select Plan
+                  </option>
 
-            <button className="mt-8 w-full bg-white text-black py-4 rounded-2xl text-lg font-semibold hover:bg-gray-200 transition">
-              Add Subscription
-            </button>
+                  <option value="Monthly">
+                    Monthly
+                  </option>
+
+                  <option value="Yearly">
+                    Yearly
+                  </option>
+
+                </select>
+
+                <input
+                  type="date"
+                  value={renewalDate}
+                  onChange={(e) =>
+                    setRenewalDate(e.target.value)
+                  }
+                  className="bg-black border border-white/10 rounded-2xl px-5 py-4 outline-none focus:border-purple-500"
+                  required
+                />
+
+              </div>
+
+              <button
+                type="submit"
+                className="mt-8 w-full bg-white text-black py-4 rounded-2xl text-lg font-semibold hover:bg-gray-200 transition"
+              >
+                Add Subscription
+              </button>
+
+            </form>
 
           </section>
 
